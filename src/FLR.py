@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 from skfda.preprocessing.dim_reduction.projection import FPCA
 from data_handler import import_air_qual
 
-X,Y = import_air_qual()
+
 def fitRegression(X,Y,type):
 
 
     #Splits the data into training/test data
     Xtrain, Xval, Ytrain, Yval = train_test_split(X, Y, test_size=0.33)
-
-    dim_points = np.linspace(0,1,Xtrain.shape[1]) #Create a sequence of Xtrain.shape[1] points from 0 - 1.
+                #np.linspace just used to create sequences like in R
+    dim_points = np.linspace(0,1,Xtrain.shape[1]) #Create a sequence of Xtrain.shape[1] points from 0 - 1. (If 1 observation has 168 data points then the sequence will be 168 entries long)
     Xtrain_fdg = FDataGrid(Xtrain,dim_points)
     Xtest_fdg = FDataGrid(Xval,dim_points)
 
@@ -36,7 +36,7 @@ def fitRegression(X,Y,type):
                 if type == "Fourier":
                     basis_vectors = [Fourier(n_basis=num_basis) for _ in range(X.shape[2])] #Specifying that each dimension of the functional data will be expanded using a Fourier expansion
                 else:
-                    basis_vectors = [BSpline(n_basis=num_basis) for _ in range(X.shape[2])] #Specifying that each dimension of the functional data will be expanded using a Fourier expansion
+                    basis_vectors = [BSpline(n_basis=num_basis) for _ in range(X.shape[2])] #Specifying that each dimension of the functional data will be expanded using a BSpline expansion
 
                 fourier_basis = VectorValued(basis_vectors) #Creating the Vector-Valued basis expansion object
 
@@ -78,8 +78,8 @@ def fitRegression(X,Y,type):
 
     Xtrain_fourier_basis=Xtrain_fdg.to_basis(fourier_basis)
     Xtest_fourier_basis=Xtest_fdg.to_basis(fourier_basis)
-    if type == "fPCA":
-        fpca_basis = FPCA(optimal_basis_num)
+    if type == "fPCR":
+        fpca_basis = FPCA(5)
         train_fpca_basis = fpca_basis.fit(Xtrain_fourier_basis)
         test_fpca_basis = fpca_basis.fit(Xtest_fourier_basis)
         Xtrain_fourier_basis = train_fpca_basis.transform(Xtrain_fourier_basis)
@@ -94,14 +94,25 @@ def fitRegression(X,Y,type):
     return(np.mean((preds-Yval) ** 2))
 
 
+X,Y = import_air_qual(multivariate=False)
+
 FourierMSE = fitRegression(X,Y,"Fourier")
 BSplineMSE = fitRegression(X,Y,"BSpline")
-fPCRMSE = fitRegression(X,Y,"fPCA")
+fPCRMSE = fitRegression(X,Y,"fPCR")
 
 print(FourierMSE)
 print(BSplineMSE)
 print(fPCRMSE)
 
+# FourierMSEs = np.array([fitRegression(X, Y, "Fourier") for _ in range(20)])
+# BSplineMSEs = np.array([fitRegression(X, Y, "BSpline") for _ in range(20)])
+# fPCRMSEs = np.array([fitRegression(X, Y, "fPCR") for _ in range(20)])
+
+# plt.boxplot([fPCRMSEs, BSplineMSEs, FourierMSEs])
+# plt.xticks([1, 2, 3], ['fPCR', 'BSpline', 'Fourier'])
+# plt.title('Comparison of MSEs from FLRs using different Basis Expansions.')
+# plt.ylabel('MSE')
+# plt.show()
 
 
 
