@@ -3,7 +3,7 @@ import numpy as np
 
 
 def import_air_qual(multivariate=False):
-    air_quality_data = pd.read_csv("AirQualityUCI.csv", sep=';', decimal=',', header=0) #Reading in the data, and specifying that the decimal points are commas so that they are instantly imported as floats.
+    air_quality_data = pd.read_csv("data/AirQualityUCI.csv", sep=';', decimal=',', header=0) #Reading in the data, and specifying that the decimal points are commas so that they are instantly imported as floats.
     air_quality_data=air_quality_data.dropna(axis=0,how="all") #Dropping rows in the DF where all variables are NA
 
     #Keeping only the variable of interest
@@ -26,7 +26,7 @@ def import_air_qual(multivariate=False):
             x_window = air_quality_data['PT08.S4(NO2)'][i:window + i].to_numpy() #Use PT08.S4(NO2) readings to try predict the true N02 value which is given by NO2(GT).
             x_window = np.expand_dims(x_window, axis=1)
         else:
-            x_window = air_quality_data['PT08.S4(NO2)', 'T', 'RH'][i:window + i].to_numpy()  #To make it multivariate include T=Temperature and RH = Relative Humidity
+            x_window = air_quality_data[['PT08.S4(NO2)', 'T', 'RH']][i:window + i].to_numpy()  #To make it multivariate include T=Temperature and RH = Relative Humidity
 
         x_unstacked.append(x_window) #Each Observation gets added to an array
         y_unstacked.append(air_quality_data["NO2(GT)"][window + i]) #Each target of the observation gets added to an array
