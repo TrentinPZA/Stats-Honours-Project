@@ -1,18 +1,21 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
-from src import data_handler, RegressionModel
+from src import data_handler, RegressionModel,utils
 from data_handler import *
 from RegressionModel import *
+from utils import *
 from sklearn.model_selection import train_test_split
 from skfda.ml.regression import LinearRegression
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 def main():
-    X, Y = import_air_qual(multivariate=False)
-
     
+
+    X,Y = import_air_qual(multivariate=True)
+    # geom_interp()
+       
     models = ["fPCA","BSpline","Fourier"]
     opt_nbasis=[]
     for model in models:
