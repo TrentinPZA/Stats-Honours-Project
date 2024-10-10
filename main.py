@@ -23,9 +23,9 @@ def main():
     elif sys.argv[1]=="ApplianceEnergy":
         Kpen=0.5
         if sys.argv[2]=="True":
-            X,Y = import_energy_data(multivariate=True)
+            X,Y = import_energy_data(multivariate=True,dim=sys.argv[3])
         else:
-            X,Y = import_energy_data(multivariate=False)
+            X,Y = import_energy_data(multivariate=False,dim="")
 
             
 
@@ -51,13 +51,13 @@ def main():
         TO_selector=SignatureOrderSelection(X_train.shape[2]+1,Kpen=Kpen)
         trunc_order = TO_selector.get_hatm(X_train,Y_train, Kpen_values=np.e ** np.linspace(-3, 2, num=200))
         print(trunc_order)
-        model = SignatureLinearModel(2)
+        model = SignatureLinearModel(trunc_order)
         model.fit(X_train,Y_train)
         mses[3].append(model.evaluate(X_test,Y_test))
     
     MSEs = [mses[0], mses[1], mses[2], mses[3]]
-    plot_MSEs(MSEs=MSEs)
-   
+    plot_MSEs(MSEs=MSEs,d=X.shape[2])
+    
     
     
 
