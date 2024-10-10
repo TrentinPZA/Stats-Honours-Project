@@ -37,8 +37,10 @@ class BasisExpansionFLR(RegressionModel):
     def create_basis_vec_valued(self,X):
         if self.basis_exp_type == 'Fourier':
             basis_vectors = [Fourier(n_basis=self.nbasis) for _ in range(X.shape[2])] 
-        else:
-            basis_vectors = [BSpline(n_basis=self.nbasis) for _ in range(X.shape[2])] #At the moment FPCA uses BSPLINE expansion as well
+        elif self.basis_exp_type=='BSpline':
+            basis_vectors = [BSpline(n_basis=self.nbasis) for _ in range(X.shape[2])]
+        elif self.basis_exp_type=="fPCA":
+            basis_vectors = [BSpline(n_basis=7) for _ in range(X.shape[2])] # Use BSplines to smooth the functional covariates in order to eliminate some of the noise and try extract meaningful patterns
         self.basis_vec_valued = VectorValued(basis_vectors)
 
     def apply_basis_exp(self,X):
@@ -63,9 +65,9 @@ class BasisExpansionFLR(RegressionModel):
     
 def nbasis_cross_validation(basis_exp_type,X,Y):
     if basis_exp_type == "Fourier" or basis_exp_type == "BSpline":
-        basis_nums = [8,9,10,11,12,13]
+        basis_nums = [4,5,6,7,8,9,10,11,12,13]
     elif basis_exp_type == "fPCA":
-        basis_nums = [7]
+        basis_nums = [1,2,3,4,5]
 
     basis_cv_mses = []
 
