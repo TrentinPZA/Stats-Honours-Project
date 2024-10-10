@@ -29,11 +29,11 @@ def geom_interp():
     plt.legend(fontsize=16)
     plt.show()
 
-def plot_MSEs(MSEs):
+def plot_MSEs(MSEs,d):
     data=MSEs
     labels = ['fPCR', 'BSpline', 'Fourier', "SLM"]
     sns.boxplot(data=data)
     plt.xticks([0, 1, 2, 3], labels)
-    plt.title('Comparison of MSEs of different models (FLR and SLM)')
+    plt.title("d="+str(d))
     plt.ylabel('MSE')
     plt.show()
