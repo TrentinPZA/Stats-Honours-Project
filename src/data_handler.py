@@ -61,6 +61,8 @@ def import_energy_data(dim,multivariate=False):
                 x_window = appliance_energy_data[["T1","T2","T3","T4","T5","T8","T9","T_out"]][i:window + i].to_numpy()  
             elif dim =="9":
                 x_window = appliance_energy_data[["T1","T2","T3","T4","T5","T7","T8","T9","T_out"]][i:window + i].to_numpy()  
+            elif dim =="11":
+                x_window = appliance_energy_data[["T1","T2","T3","T4","T5","T6","T7","T8","T9","T_out","Windspeed"]][i:window + i].to_numpy()  
 
         x_unstacked.append(x_window) #Each Observation gets added to an array
         y_unstacked.append(appliance_energy_data["Appliances"][window + i]) #Each target of the observation gets added to an array
