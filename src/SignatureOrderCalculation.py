@@ -4,7 +4,7 @@ import seaborn as sns
 import math
 import iisignature as isig
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 #Author: Adeline Fermanian
 #Year: 2022
@@ -141,6 +141,9 @@ class SignatureOrderSelection(object):
 
         palette = sns.color_palette('colorblind')
         fig, ax = plt.subplots()
+        plt.subplots_adjust(left=0.5, bottom=0.15)
+        fig.patch.set_facecolor('white')
+        ax.set_facecolor('white')
         jump = 1
         for i in range(self.max_k + 1):
             if i in hatm:
@@ -153,6 +156,13 @@ class SignatureOrderSelection(object):
             else:
                 jump += 1
         ax.set(xlabel=r'$K_{pen}$', ylabel=r'$\hat{m}$')
+        ax.xaxis.label.set_size(32)  
+        ax.yaxis.label.set_size(32)
+        for spine in ax.spines.values():
+            spine.set_edgecolor('black')  # Set to black color
+            spine.set_linewidth(1)
+        ax.tick_params(axis='both', which='major', labelsize=30)
+        ax.grid(True, color='gray', linestyle='--', linewidth=0.5)
         plt.show()
         return hatm
 

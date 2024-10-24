@@ -58,11 +58,11 @@ def import_energy_data(dim,multivariate=False):
             x_window = np.expand_dims(x_window, axis=1)
         else:
             if dim =="8":
-                x_window = appliance_energy_data[["T1","T2","T3","T4","T5","T8","T9","T_out"]][i:window + i].to_numpy()  
+                x_window = appliance_energy_data[["T_out","T1","T2","T3","T4","T5","T8","T9"]][i:window + i].to_numpy()  
             elif dim =="9":
-                x_window = appliance_energy_data[["T1","T2","T3","T4","T5","T7","T8","T9","T_out"]][i:window + i].to_numpy()  
+                x_window = appliance_energy_data[["T_out","T1","T2","T3","T4","T5","T7","T8","T9"]][i:window + i].to_numpy()  
             elif dim =="11":
-                x_window = appliance_energy_data[["T1","T2","T3","T4","T5","T6","T7","T8","T9","T_out","Windspeed"]][i:window + i].to_numpy()  
+                x_window = appliance_energy_data[["T_out","T1","T2","T3","T4","T5","T6","T7","T8","T9","Windspeed"]][i:window + i].to_numpy()  
 
         x_unstacked.append(x_window) #Each Observation gets added to an array
         y_unstacked.append(appliance_energy_data["Appliances"][window + i]) #Each target of the observation gets added to an array
@@ -72,6 +72,5 @@ def import_energy_data(dim,multivariate=False):
     X = np.stack(x_unstacked)
     Y = np.stack(y_unstacked)
     Y =Y/100
-    print(X.shape)
     return(X,Y)
     

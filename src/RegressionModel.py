@@ -29,13 +29,13 @@ class RegressionModel:
 class BasisExpansionFLR(RegressionModel):
     def __init__(self,basis_exp_type = "Fourier",nbasis=10): #Set default parameters, Fourier and nbasis = 10
         super().__init__()
-        self.basis_exp_type = basis_exp_type
-        self.nbasis=nbasis
+        self.basis_exp_type = basis_exp_type #Setting the type of basis expansion used
+        self.nbasis=nbasis #The number of basis functions used
         self.basis_vec_valued = None
-        self.model = LinearRegression()
+        self.model = LinearRegression() #FLR
 
-    def create_basis_vec_valued(self,X):
-        if self.basis_exp_type == 'Fourier':
+    def create_basis_vec_valued(self,X): #Create specified basis expansion objects, store in VectorValued
+        if self.basis_exp_type == 'Fourier': 
             basis_vectors = [Fourier(n_basis=self.nbasis) for _ in range(X.shape[2])] 
         elif self.basis_exp_type=='BSpline':
             basis_vectors = [BSpline(n_basis=self.nbasis) for _ in range(X.shape[2])]
@@ -43,7 +43,7 @@ class BasisExpansionFLR(RegressionModel):
             basis_vectors = [BSpline(n_basis=7) for _ in range(X.shape[2])] # Use BSplines to smooth the functional covariates in order to eliminate some of the noise and try extract meaningful patterns
         self.basis_vec_valued = VectorValued(basis_vectors)
 
-    def apply_basis_exp(self,X):
+    def apply_basis_exp(self,X): #Actually applying the basis expansion
         dim_points = np.linspace(0,1,X.shape[1])
         X_fdg=FDataGrid(X,dim_points)
         X_bexp = X_fdg.to_basis(self.basis_vec_valued)
@@ -54,16 +54,16 @@ class BasisExpansionFLR(RegressionModel):
 
         return (X_bexp)
     
-    def fit(self,X,Y):
+    def fit(self,X,Y): #Fitting the FLR model
         
         self.create_basis_vec_valued(X)
         X_bexp = self.apply_basis_exp(X)
-        self.model.fit(X_bexp,Y)
+        self.model.fit(X_bexp,Y) #Fit the FLR using the basis expanded data
 
     def predict(self, X):
         return self.model.predict(self.apply_basis_exp(X))
     
-def nbasis_cross_validation(basis_exp_type,X,Y):
+def nbasis_cross_validation(basis_exp_type,X,Y): #Performing 5-fold CV to determine the optimal number of basis functions to be used. 
     if basis_exp_type == "Fourier" or basis_exp_type == "BSpline":
         basis_nums = [4,5,6,7,8,9,10,11,12,13]
     elif basis_exp_type == "fPCA":
@@ -85,10 +85,10 @@ def nbasis_cross_validation(basis_exp_type,X,Y):
 
 
 class SignatureLinearModel(RegressionModel):
-    def __init__(self,m): #Set default parameters, Fourier and nbasis = 10
+    def __init__(self,m): 
         super().__init__()
-        self.model = Ridge(normalize=False, fit_intercept=False, solver='svd')
-        self.m=m
+        self.model = Ridge(normalize=False, fit_intercept=False, solver='svd') #Ridge Regularized Linear Regression
+        self.m=m #Assigning the truncation order estimated using Fermanian's code
         
     
     def add_time_dimension(self,X):
@@ -99,7 +99,7 @@ class SignatureLinearModel(RegressionModel):
         return Xtime
 
     def calculate_sig(self,X):
-        trunc_order = self.m #NEED ALGORITHM TO FIND OPTIMAL TRUNC ORDER 
+        trunc_order = self.m #Using the 
         arr_sig=[]
     
         if trunc_order == 0:
