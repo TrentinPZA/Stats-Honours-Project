@@ -15,7 +15,7 @@ To run the code there are 8 options:
 
 ### For Air Quality dataset
 
-For the univariate case: `python main.py AirQuality False`
+For the univariate case: `python main.py AirQuality False`  
 For the multivariate case: `python main.py AirQuality True`   
 
 ### For Appliance Energy Prediction dataset
